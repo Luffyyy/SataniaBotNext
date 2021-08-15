@@ -13,7 +13,7 @@ const pkg = JSON.parse(fs.readFileSync('package.json'));
 axios.defaults.headers['User-Agent'] = `${pkg.name} ${pkg.repository}`;
 axios.defaults.headers.Accept = "application/json";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_PRESENCES] });
 
 client.on('ready', () => {
     console.log('Bow down to me humans!');

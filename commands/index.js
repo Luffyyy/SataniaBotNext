@@ -9,6 +9,7 @@ import comfy from './comfy.js';
 import gay from './gay.js';
 import waifu from './waifu.js';
 import invite from './invite.js';
+import searchGames from './search-games.js';
 
 export default [
     bday,
@@ -22,4 +23,5 @@ export default [
     gay,
     waifu,
     invite,
+    searchGames
 ];
