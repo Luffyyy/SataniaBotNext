@@ -48,6 +48,6 @@ export default {
         .addUserOption(option => {
             return option.setName('cowboy')
                 .setDescription('The other cowboy you wanna shoot!')
-                .setRequired(false);
+                .setRequired(true);
         })
 };

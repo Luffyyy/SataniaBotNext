@@ -104,6 +104,6 @@ export default {
         .addUserOption(option => {
             return option.setName('who')
                 .setDescription('Check someone other than yourself')
-                .setRequired(false);
+                .setRequired(true);
         })
 };
