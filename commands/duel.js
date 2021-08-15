@@ -14,10 +14,12 @@ export default {
 		}
 
 		let duelers = [initiator, user];
-        let content = await interaction.reply({
-            content: `**<@${initiator.id}>** and **<@${user.id}>** start a duel...`, 
-            fetchReply: true, 
-        }).then(reply => reply.content);
+        const challenge = user.id === process.env.APP_ID;
+        let content = `**<@${initiator.id}>** and **<@${user.id}>** start a duel...`;
+        if (challenge) {
+            content = `You dare challenge me?...`
+        }
+        await interaction.reply(content);
 		await sleep(1250);
 
         async function editReply(newContent, last=false) {
@@ -30,7 +32,12 @@ export default {
 		await editReply('Ready...');
 		await editReply('**FIRE!**');
 
-		if (Math.random() >= 0.5) {
+        let chance = 0.5;
+        if (challenge) {
+            chance = 0.01;
+        } 
+        
+        if (Math.random() >= chance) {
 			duelers = duelers.reverse();
 		}
 
