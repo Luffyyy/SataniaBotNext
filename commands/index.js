@@ -8,6 +8,7 @@ import joke from './joke.js';
 import comfy from './comfy.js';
 import gay from './gay.js';
 import waifu from './waifu.js';
+import invite from './invite.js';
 
 export default [
     bday,
@@ -19,5 +20,6 @@ export default [
     joke,
     comfy,
     gay,
-    waifu
+    waifu,
+    invite,
 ];
