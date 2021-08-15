@@ -86,13 +86,12 @@ export default {
                 fields: [
                     {
                         name: '  Orientation:',
-                        value: `\`${bar(orientation, 24)}\`      **Straight:** ${percent(straight)}\n` +
-                            `◂ Straight                    Gay ▸            **Gay:** ${percent(gay)}\n` +
-                            `                                                 **Asexuality:** ${percent(1 - activity)}`
+                        value: `**Straight:** ${percent(straight)} | **Gay:** ${percent(gay)} | **Asexuality:** ${percent(1 - activity)} \n \`${bar(orientation, 24)}\`\n` +
+                            `◂ Straight${'\u2003'.repeat(5)}Gay ▸`
                     },
                     {
                         name: 'Sexual Activity:',
-                        value: `\`${bar(activity, 24)}\`\n◂ Low                         High ▸`
+                        value: `\`${bar(activity, 24)}\`\n◂ Low${'\u2003'.repeat(6)}High ▸`
                     }
                 ]
             }]
