@@ -17,7 +17,7 @@ const reactWith = ['🇵', '🇷', '🇮', '🇦', '🇸', '🇪'];
 export default {
     async tryExecute(message, client) {
         if (client.guilds.cache.has('310180409541394432')) {
-            const emojis = client.guilds.cache.get('310180409541394432').emojis;
+            const emojis = client.guilds.cache.get('310180409541394432').emojis.cache;
             reactWith.push(emojis.filter(value => value.name.replace(/^gif/, '').startsWith('Satania')).random());
         }    
 
