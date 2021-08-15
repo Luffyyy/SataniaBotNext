@@ -4,7 +4,14 @@ import { REST } from '@discordjs/rest';
 
 import dotenv from 'dotenv';
 import { Routes } from 'discord-api-types/v9';
+import axios from 'axios';
+import fs from 'fs';
 dotenv.config();
+
+const pkg = JSON.parse(fs.readFileSync('package.json'));
+
+axios.defaults.headers['User-Agent'] = `${pkg.name} ${pkg.repository}`;
+axios.defaults.headers.Accept = "application/json";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
 
