@@ -17,11 +17,12 @@ export async function react(client, message, trigger, reactWith) {
     // Listen to any edit to combat abuse of the command
     client.once('messageUpdate', handleEdit);
     
+    await sleep(150);
+
     for (const react of reactWith) {
         try {
             if (!cancelled) {
                 await message.react(react);
-                await sleep(150);
             } else {
                 break;
             }
