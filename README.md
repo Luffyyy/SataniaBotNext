@@ -11,7 +11,7 @@ Credit goes to @Pizzacus for most of the original code.
 I've been doing some web development recently and the absence of import/export drove me nuts, I don't like JS pre-ES6 simple as that.
 
 ## Setup
-SataniaBot uses discord.js v13, you can simply clone the repository and run `npm i` (or `yarn add`) to install the dependencies she needs. **Make sure you have at minimum Node version 16.6.0**.
+SataniaBot uses discord.js v13, you can simply clone the repository and run `npm i` (or `yarn`) to install the dependencies she needs. **Make sure you have at minimum Node version 16.6.0**.
 
 After that, create a .env file in the root directory and put there just 2 values: 
 ```
