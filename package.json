@@ -2,7 +2,9 @@
   "name": "sataniabotnext",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
+    "@discordjs/builders": "^0.5.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "dayjs": "^1.10.6",
     "discord-api-types": "^0.22.0",

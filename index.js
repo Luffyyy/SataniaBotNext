@@ -1,7 +1,10 @@
-const dayjs = require('dayjs');
-const { Client, Intents } = require('discord.js');
-const reg = require('./reg');
-require('dotenv').config();
+import { Client, Intents, Collection } from 'discord.js';
+import commands from './commands/index.js';
+import { REST } from '@discordjs/rest';
+
+import dotenv from 'dotenv';
+import { Routes } from 'discord-api-types/v9';
+dotenv.config();
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
 
@@ -9,63 +12,55 @@ client.on('ready', () => {
     console.log('Bow down to me humans!');
 });
 
-const kurumizawa = /(kurumizawa|胡桃沢)?\s*/;
-const satania = /(satan(i|y|ichi)a|Сатании|サタニキア|サターニャ|사타냐|萨塔妮娅)\s*-?/;
-const mcdowell = /(mcdowellu?|マクドウェル)?\s*/;
-const honorifics = /(sama|san|chan|senpai|さま|様|さん|ちゃん|せんぱい|先輩)?\s*/;
-const extra = /[!！¡﹗︕‼¿？⁉﹖︖⁈⁇?~˜～〜]*/;
-const sataniaName = reg`${kurumizawa}${satania}${mcdowell}${honorifics}`;
+const rest = new REST({version: '9'}).setToken(process.env.BOT_TOKEN);
 
-const happyBirthday = /happy\s*(birthday|bday|day\s*of\s*(the)?\s*birth)/;
-const tanjoubiOmedetou = /(お?(たんじょうび|誕生日)おめでとう(ございます|です)?)/;
-const frenchBirthday = /(joyeu(x|se)?|bon(ne)?)\s*(ann?iv(erss?aire?)?|f[êe]te)s?/;
-const spanishBirthday = /feliz\s*(cumplea[ñn]os|cumple)/;
-const portugueseBirthday = /(feliz\s*anivers[áa]rio)|Parab[ée]ns/;
+client.commands = new Collection();
+const jsonCommands = [];
+const legacyCommands = [];
+commands.forEach(command => {
+    if (command.data !== undefined) {
+        client.commands.set(command.data.name, command);
+        jsonCommands.push(command.data.toJSON());
+    } else {
+        legacyCommands.push(command);
+    }
+});
 
-const sentences = [
-	reg`${happyBirthday},?\s*${sataniaName}`, // English
-	reg`${sataniaName},?\s*${happyBirthday}`,
-	reg`${sataniaName}、?${tanjoubiOmedetou}${/よ?ね?/}`, // Japanese
-	reg`${tanjoubiOmedetou}、?${sataniaName}`,
-	reg`${spanishBirthday},?${sataniaName}`, // Spanish
-	reg`${sataniaName},?${spanishBirthday}`,
-	reg`${frenchBirthday},?\s*${sataniaName}`, // French
-	reg`${sataniaName},?\s*${frenchBirthday}`,
-	reg`${portugueseBirthday},?\s*${sataniaName}`, // Portuguese
-	reg`${sataniaName},?\s*${portugueseBirthday}`
-];
+(async () => {
+	try {
+		console.log('Started refreshing application (/) commands.');
 
-const trigger = reg.i`^(${extra}${sentences}${extra})$`;
-const reactWith = ['876101274104373298', '🎉', '🎂'];
+		await rest.put(
+			Routes.applicationGuildCommands(process.env.APP_ID, '769411299485810698'),
+			{ body: jsonCommands },
+		);
+
+		console.log('Successfully reloaded application (/) commands.');
+	} catch (error) {
+		console.error(error);
+	}
+})();
 
 client.on('messageCreate', async message => {
-    const day = dayjs().date();
-    if (!dayjs().month() === 7 || day < 14 || day > 16 || !trigger.test(message.content)) {
+    for (const command of legacyCommands) {
+        if ((!command.trigger || command.trigger.test(message.content)) && await command.tryExecute(message, client)) {
+            break;
+        }
+    }
+});
+
+client.on('interactionCreate', async interaction => {
+    const { commandName } = interaction;
+	if (!interaction.isCommand() || !client.commands.has(commandName)) {
         return;
     }
 
-    async function handleEdit(_, newMessage) {
-        if (newMessage.id === message.id && !trigger.test(newMessage.content)) {
-            try {
-                await newMessage.reactions.removeAll();
-            } catch (error) {
-                await message.reply("I'm not able to remove reactions. Please check the permissions");
-            }
-        } else {
-            client.once('messageUpdate', handleEdit);
-        }
-    }
-    // Listen to any edit to combat abuse of the command
-    client.once('messageUpdate', handleEdit);
-
-    for (const react of reactWith) {
-        try {
-            await message.react(react);
-        } catch (error) {
-            await message.reply('I seem to not be able to react! Please check the permissions');
-            return;
-        }
-    }
+	try {
+		await client.commands.get(commandName).execute(interaction);
+	} catch (error) {
+		console.log(error);
+		return interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
 });
 
 client.login(process.env.BOT_TOKEN);
