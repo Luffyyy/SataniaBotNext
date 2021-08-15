@@ -10,6 +10,7 @@ import gay from './gay.js';
 import waifu from './waifu.js';
 import invite from './invite.js';
 import searchGames from './search-games.js';
+import playing from './playing.js';
 
 export default [
     bday,
@@ -23,5 +24,6 @@ export default [
     gay,
     waifu,
     invite,
-    searchGames
+    searchGames,
+    playing
 ];
