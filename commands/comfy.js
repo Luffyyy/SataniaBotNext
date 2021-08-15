@@ -103,10 +103,10 @@ export default {
             embeds: [fixEmbeds({
                 color: 0xee6666,
                 author: {
-                    name: `Comfiness forecast for <@!${user.username}>`,
+                    name: `Comfiness forecast for ${user.username}`,
                     icon_url: user.displayAvatarURL()
                 },
-                title: `Your forecasted comfiness for tomorrow is: <@!${user.id}>`,
+                title: `Your forecasted comfiness for tomorrow is:`,
                 fields: [{
                     name: `**__${rating}__**   (${(comfy.comfvalue / MAX_COMFY * 100).toFixed(1)} %)`,
                     value: `\`[${bar(comfy.comfvalue / MAX_COMFY, 24)}]\``
