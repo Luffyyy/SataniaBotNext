@@ -183,7 +183,7 @@ export default {
                 },
                 fields: [
                     {
-                        name: 'Informations',
+                        name: 'Information',
                         value: infos
                     }
                 ]
