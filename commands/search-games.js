@@ -33,16 +33,17 @@ export default {
             desc += `\n...and ${(results.length - MAX_RESULTS).toLocaleString()} more results`;
         }
     
-        return interaction.reply({
+        await interaction.reply({
             content: ' ',
             embeds: [{
+                color: 0xee6666,
                 title: `Games matching "${query}" on this server`,
                 description: desc
             }]
         });
     },
     data: new SlashCommandBuilder()
-        .setName('playing')
+        .setName('games')
         .setDescription('Search among the games played on your server')
         .addStringOption(option => {
             return option.setName('query')
