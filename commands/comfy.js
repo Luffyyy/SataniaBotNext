@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import axios from "axios";
+import fixEmbeds from "../utils/fix-embeds.js";
 
 const RATING_ARRAY = [
 	'MEGA COMFY',
@@ -99,7 +100,7 @@ export default {
     
         return interaction.reply({
             content: ' ',
-            embeds: [{
+            embeds: [fixEmbeds({
                 color: 0xee6666,
                 author: {
                     name: `Comfiness forecast for <@!${user.username}>`,
@@ -117,7 +118,7 @@ export default {
                         day: 'numeric'
                     })}  —  thx Sebberino ♥`
                 }
-            }]
+            })]
         });
     },
     data: new SlashCommandBuilder()

@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import yaml from 'js-yaml';
 import fs from 'fs';
 import seedrandom from "seedrandom";
+import fixEmbeds from "../utils/fix-embeds.js";
 
 const {types, ratings, cupSizes, bloodTypes} = yaml.load(fs.readFileSync('assets/waifu-const.yaml'));
 const overrides = yaml.load(fs.readFileSync('assets/waifu-overrides.yaml'));
@@ -174,7 +175,8 @@ export default {
     
         return interaction.reply({
             content: ' ',
-            embeds: [{
+            embeds: [fixEmbeds({
+				color: 0xee6666,
                 title: `Waifu Type: __${type.name}__`,
                 description,
                 author: {
@@ -187,7 +189,7 @@ export default {
                         value: infos
                     }
                 ]
-            }]
+            })]
         });
     },
     data: new SlashCommandBuilder()
