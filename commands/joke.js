@@ -10,6 +10,7 @@ export default {
             await interaction.reply({
                 content: ' ',
                 embeds: [{
+                    color: 0xee6666,
                     // That's an en space, it's a bit wider than a regular space
                     description: data.joke + '\u2002' + link,
                     footer: {

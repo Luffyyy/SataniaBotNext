@@ -79,6 +79,7 @@ export default {
             content: ' ',
             embeds: [{
                 title: `Rating: __${rating}__`,
+                color: 0xee6666,
                 author: {
                     name: `Gay ratings for ${user.username}`,
                     icon_url: user.displayAvatarURL() // eslint-disable-line camelcase

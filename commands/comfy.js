@@ -100,6 +100,7 @@ export default {
         return interaction.reply({
             content: ' ',
             embeds: [{
+                color: 0xee6666,
                 author: {
                     name: `Comfiness forecast for <@!${user.username}>`,
                     icon_url: user.displayAvatarURL()
