@@ -9,7 +9,7 @@ export default {
         const initiator = interaction.user;
 
         if (initiator.id === user.id) {
-			await interaction.reply(`**DUMBASS** successfully killed themselves with a bullet in their head 😂🔫`);
+			await interaction.reply(`**<@${initiator.id}>** successfully killed themselves with a bullet in their head 😂🔫`);
 			return;
 		}
 
