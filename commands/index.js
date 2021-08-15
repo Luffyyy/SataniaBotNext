@@ -11,6 +11,7 @@ import waifu from './waifu.js';
 import invite from './invite.js';
 import searchGames from './search-games.js';
 import playing from './playing.js';
+import image from './image.js';
 
 export default [
     bday,
@@ -25,5 +26,6 @@ export default [
     waifu,
     invite,
     searchGames,
-    playing
+    playing,
+    image
 ];

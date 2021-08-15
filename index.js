@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { Routes } from 'discord-api-types/v9';
 import axios from 'axios';
 import fs from 'fs';
+import reg from './utils/reg.js';
 dotenv.config();
 
 const pkg = JSON.parse(fs.readFileSync('package.json'));
@@ -13,7 +14,8 @@ const pkg = JSON.parse(fs.readFileSync('package.json'));
 axios.defaults.headers['User-Agent'] = `${pkg.name} ${pkg.repository}`;
 axios.defaults.headers.Accept = "application/json";
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_PRESENCES] });
+const FLAGS = Intents.FLAGS;
+const client = new Client({ intents: [FLAGS.GUILDS, FLAGS.GUILD_MESSAGES, FLAGS.GUILD_MESSAGE_REACTIONS, FLAGS.GUILD_PRESENCES, FLAGS.GUILD_EMOJIS_AND_STICKERS] });
 
 client.on('ready', () => {
     console.log('Bow down to me humans!');
@@ -38,7 +40,7 @@ commands.forEach(command => {
 		console.log('Started refreshing application (/) commands.');
 
 		await rest.put(
-			Routes.applicationGuildCommands(process.env.APP_ID, '769411299485810698'),
+			Routes.applicationGuildCommands(process.env.APP_ID, '310180409541394432'),
 			{ body: jsonCommands },
 		);
 
@@ -48,9 +50,32 @@ commands.forEach(command => {
 	}
 })();
 
+const PREFIX = /s!/;
+
 client.on('messageCreate', async message => {
+	if (message.author.id === process.env.APP_ID) {
+		return;
+	}
     for (const command of legacyCommands) {
-        if ((!command.trigger || command.trigger.test(message.content)) && await command.tryExecute(message, client)) {
+		let trigger = command.trigger;
+		let content = / .+/;
+		let legacyCommand = command.legacyCommand && new RegExp(command.legacyCommand) || '';
+		if (legacyCommand) {
+			if (command.contentRequired === false) {
+				content = /\s?.*/;
+			}
+			trigger = reg`${PREFIX}${legacyCommand}${content}`;
+		}
+
+		if (trigger) {
+			trigger = reg`^${trigger}$`;
+			if (trigger.test(message.content)) {
+				message.commandContent = message.content.replace(reg`${PREFIX}${legacyCommand}\s?`, '');
+			} else {
+				continue;
+			}
+		} 
+        if (await command.tryExecute(message, client)) {
             break;
         }
     }
@@ -71,3 +96,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.login(process.env.BOT_TOKEN);
+
+process.on('uncaughtException', function (err) {
+	console.log('Caught exception: ', err);
+});

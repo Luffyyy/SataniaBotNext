@@ -11,6 +11,7 @@
 	"rules": {
         "semi": "error",
         "space-before-blocks": "warn",
-        "no-var": "error"
+        "no-var": "error",
+		"no-misleading-character-class": "silent"
 	}
 }

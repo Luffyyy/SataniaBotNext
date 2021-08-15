@@ -3,7 +3,7 @@ function isIterator(val) {
 	return val != null && typeof val[Symbol.iterator] === 'function';
 }
 
-module.exports = new Proxy(function (strings, ...keys) {
+export default new Proxy(function (strings, ...keys) {
 	let flags = '';
 
 	if (typeof strings === 'string') {
