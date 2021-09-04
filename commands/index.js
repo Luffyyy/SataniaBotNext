@@ -12,6 +12,7 @@ import invite from './invite.js';
 import searchGames from './search-games.js';
 import playing from './playing.js';
 import image from './image.js';
+import calc from './calc.js';
 
 export default [
     bday,
@@ -27,5 +28,6 @@ export default [
     invite,
     searchGames,
     playing,
-    image
+    image,
+    calc
 ];
