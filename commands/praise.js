@@ -12,10 +12,11 @@ const sentences = [
 ];
 
 const trigger = reg.i`^(${extra}${sentences}${extra})$`;
-const reactWith = ['🇵', '🇷', '🇮', '🇦', '🇸', '🇪'];
 
 export default {
-    async tryExecute(message, client) {
+    async execute(message, client) {
+        const reactWith = ['🇵', '🇷', '🇦', '🇮', '🇸', '🇪'];
+
         if (client.guilds.cache.has('310180409541394432')) {
             const emojis = client.guilds.cache.get('310180409541394432').emojis.cache;
             reactWith.push(emojis.filter(value => value.name.replace(/^gif/, '').startsWith('Satania')).random());

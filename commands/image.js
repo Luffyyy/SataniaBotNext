@@ -3,9 +3,13 @@ import fetchImage from '../utils/fetch-image.js';
 import { isSVG } from '../utils/svg-utils.js';
 import { SlashCommandBuilder } from "@discordjs/builders";
 import fileType from 'file-type';
+import { Interaction } from 'discord.js';
 
 export default {
-    async tryExecute(message) {
+    async execute(message) {
+        if (message instanceof Interaction) {
+            message.commandContent = message.options.getString("query");
+        }
         const link = resolveLink(message);
 
         if (!link) {
@@ -33,12 +37,12 @@ export default {
     },
     legacyCommand: 'image',
     contentRequired: false,
-    dataa: new SlashCommandBuilder()
+    data: new SlashCommandBuilder()
         .setName('image')
         .setDescription(' ')
         .addStringOption(option => {
             return option.setName('query')
                 .setDescription(' ')
-                .setRequired(true);
+                .setRequired(false);
         })
 };

@@ -26,7 +26,7 @@ const trigger = reg.i`^(${extra}${sentences}${extra})$`;
 const reactWith = ['876101274104373298', '🎉', '🎂'];
 
 export default {
-    async tryExecute(message, client) {
+    async execute(message, client) {
         const day = dayjs().date();
         if (!dayjs().month() === 7 || day < 14 || day > 16) {
             return false;

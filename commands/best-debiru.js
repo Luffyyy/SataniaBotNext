@@ -1,7 +1,7 @@
 const trigger = /^(good|best|great|nice|cool(est)?)\s+(bot|girl|demon|waifu|akuma|devil|debiru)\s*!*$/i;
 
 export default {
-    async tryExecute(message) {
+    async execute(message) {
         const messageCache = message.channel.messages.cache;
         const channelMessagesID = [...messageCache.keys()];
         const lastMessageIndex = channelMessagesID[channelMessagesID.indexOf(message.id) - 1];

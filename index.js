@@ -30,7 +30,8 @@ commands.forEach(command => {
     if (command.data !== undefined) {
         client.commands.set(command.data.name, command);
         jsonCommands.push(command.data.toJSON());
-    } else {
+    }
+	if (command.legacyCommand || command.trigger) {
         legacyCommands.push(command);
     }
 });
@@ -39,10 +40,8 @@ commands.forEach(command => {
 	try {
 		console.log('Started refreshing application (/) commands.');
 
-		await rest.put(
-			Routes.applicationGuildCommands(process.env.APP_ID, '310180409541394432'),
-			{ body: jsonCommands },
-		);
+		await rest.put(Routes.applicationGuildCommands(process.env.APP_ID, '310180409541394432'), { body: jsonCommands });
+		await rest.put(Routes.applicationGuildCommands(process.env.APP_ID, '769411299485810698'), { body: jsonCommands });
 
 		console.log('Successfully reloaded application (/) commands.');
 	} catch (error) {
@@ -64,18 +63,18 @@ client.on('messageCreate', async message => {
 			if (command.contentRequired === false) {
 				content = /\s?.*/;
 			}
-			trigger = reg`${PREFIX}${legacyCommand}${content}`;
+			trigger = reg.i`${PREFIX}${legacyCommand}${content}`;
 		}
 
 		if (trigger) {
-			trigger = reg`^${trigger}$`;
+			trigger = reg.i`^${trigger}$`;
 			if (trigger.test(message.content)) {
-				message.commandContent = message.content.replace(reg`${PREFIX}${legacyCommand}\s?`, '');
+				message.commandContent = message.content.replace(reg.i`${PREFIX}${legacyCommand}\s?`, '');
 			} else {
 				continue;
 			}
 		} 
-        if (await command.tryExecute(message, client)) {
+        if (await command.execute(message, client)) {
             break;
         }
     }
