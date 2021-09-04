@@ -44,6 +44,8 @@ function compareIDs(a, b) {
  * @returns {boolean} If the message contained an image
  */
 function hasImage(message) {
+	message.matchedEmojis ||= matchEmojis(message.content);
+
 	return (
 		message.embeds.some(
 			embed =>
@@ -54,7 +56,7 @@ function hasImage(message) {
 			attachment =>
 				attachment.height != null ||
 				attachment.width != null
-		)
+		) ||  message.stickers.size > 0 || message.matchedEmojis.length > 0
 	);
 }
 
@@ -164,6 +166,57 @@ const handler = {
 		url: channelName.icon(channel),
 		name: channelName(channel)
 	}),
+	interaction: message => {
+		const content = message.commandContent;
+
+		const resolve = [
+			message.attachments, // Right now attachments aren't supported :(
+			matchURLs(content),
+			message.mentions,
+			message.stickers,
+			matchEmojis(content)
+		];
+
+		const channelContainerName = message.guild instanceof Discord.Guild ? message.guild.name : channelName(message.channel);
+
+		if (content.search(Discord.MessageMentions.EVERYONE_PATTERN) >= 0 || normalize(content).includes(normalize(channelContainerName))) {
+			if (message.guild == null) {
+				resolve.push(message.channel);
+			} else {
+				resolve.push(message.guild);
+			}
+		}
+
+		resolve.push(message.embeds);
+
+		// ^^^^ keyword, it is pretty important to trim the content,
+		// as the regex would report a match on a string that is only spaces
+		if (/^[\^＾˄ˆᶺ⌃\s]+$/.test(content.trim())) {
+			const lastMessage = lastImage(message.channel);
+			
+			if (lastMessage) {
+				console.dir(lastMessage.embeds);
+				resolve.push(lastMessage.attachments, lastMessage.embeds, lastMessage.stickers, lastMessage.matchedEmojis);
+			}
+		}
+
+		const link = resolveLink(resolve);
+
+		if (link && link.type === 'user' && link.source instanceof Discord.User) {
+			link.name = nick(link.source, message.channel);
+		}
+
+		if (link && link.type === 'emoji') {
+			const emoji = link.source;
+
+			const emojis = message.client.emojis.cache;
+			if (emoji.custom && emojis.has(emoji.id)) {
+				link.name = emojis.get(emoji.id).toString();
+			}
+		}
+
+		return link;
+	},
 	message: message => {
 		const content = message.commandContent;
 
@@ -273,6 +326,9 @@ function resolveLinkItem(item) {
 			break;
 		case Discord.Sticker:
 			link = handler.sticker(item);
+			break;
+		case Discord.CommandInteraction:
+			link = handler.interaction(item);
 			break;
 		default:
 	}
