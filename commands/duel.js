@@ -13,8 +13,24 @@ export default {
 			return;
 		}
 
-		let duelers = [initiator, user];
+        // Do this before the waiting to not break the counter because of race conditions
         const challenge = user.id === process.env.APP_ID;
+		let duelers = [initiator, user];
+        let chance = 0.5;
+        if (challenge) {
+            chance = 0.01;
+        } 
+        
+        if (Math.random() >= chance) {
+			duelers = duelers.reverse();
+		}
+
+		const [winner, loser] = duelers;
+
+		winstreak[winner.id] = winstreak[winner.id] + 1 || 1;
+		winstreak[loser.id] = 0;
+        const actualStreak = winstreak[winner.id];
+
         let content = `**<@${initiator.id}>** and **<@${user.id}>** start a duel...`;
         if (challenge) {
             content = `You dare challenge me?...`
@@ -31,23 +47,8 @@ export default {
 
 		await editReply('Ready...');
 		await editReply('**FIRE!**');
-
-        let chance = 0.5;
-        if (challenge) {
-            chance = 0.01;
-        } 
-        
-        if (Math.random() >= chance) {
-			duelers = duelers.reverse();
-		}
-
-		const [winner, loser] = duelers;
-
-		winstreak[winner.id] = winstreak[winner.id] + 1 || 1;
-		winstreak[loser.id] = 0;
-
 		await editReply(`\n\n**<@${winner.id}> won the duel** and killed <@${loser.id}>!`);
-        await editReply(` \`Winstreak: ${winstreak[winner.id]}\``);
+        await editReply(` \`Winstreak: ${actualStreak}\``);
     },
     data: new SlashCommandBuilder()
         .setName('duel')
